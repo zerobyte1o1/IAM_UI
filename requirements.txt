@@ -1,0 +1,4 @@
+PyHamcrest==2.0.3
+pytest==6.2.4
+selenium==4.1.0
+seletools==1.2.1

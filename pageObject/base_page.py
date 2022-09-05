@@ -2,40 +2,32 @@ import time
 from selenium import webdriver
 from selenium.webdriver import Keys
 from selenium.webdriver.common.by import By
-
+from selenium.webdriver.chrome.service import Service
 from utils.env import Environment
+from utils.driver_factory import DriverFactory
 
 
 class BasePage:
     _base_url = None
+
     # 当子类没有构造函数的时候，在实例化的过程中，会自动父类的构造函数
     # 所以，每个PO 在实例化过程中，都会执行构造函数的逻辑
     # 问题： 如何避免driver 的重复实例化
 
-    def __init__(self, base_driver=None):
+    def __init__(self):
         """
         告诉父类的构造函数，如果传参了，不需要进行重复的实例化操作
         如果没有传参， 那么就是第一次的实例化操作，需要进行实例化
         :param base_driver:
         """
-        # 如果base_driver 为真， 为真就是不等于None，那么就不需要重复实例化的操作
-        if base_driver:
-            # 非第一次实例化操作
-            # 为了保证，后面的子类在使用的过程中，都具有driver属性，所以需要做赋值操作
-            self.driver = base_driver
-        # 如果base_driver 为None/假， 那么就需要对Driver进行实例化
+        # DriverFactory.driver为真，则已有开启窗口无需重新实例化
+        if DriverFactory.driver:
+            # 存在driver时则沿用driver
+            self.driver = DriverFactory.driver
+            self.driver.get(self._base_url)
+        # 如果不存在driver，则重新开启窗口并登录
         else:
-            self.driver = webdriver.Chrome()
-            self.driver.implicitly_wait(10)
-            if self._base_url is not None:
-                self.driver.get(self._base_url)
-                env = Environment()
-                self.driver.maximize_window()
-                self.driver.find_element(By.XPATH, "//input[@name='account']").send_keys(env.account())
-                self.driver.find_element(By.XPATH, "//input[@name='password']").send_keys(env.password())
-                self.driver.find_element(By.CSS_SELECTOR, ".MuiButton-label").click()
-            else:
-                pass
+            self.driver = DriverFactory.get_driver()
 
     def goto_bom(self):
         self.driver.find_element(By.XPATH, "//ul/div[2]").click()
@@ -109,3 +101,10 @@ class BasePage:
         element.send_keys(Keys.ARROW_DOWN)
         while element.get_attribute("value"):
             element.send_keys(Keys.BACKSPACE)
+
+    def get_login(self):
+        self.driver.get("http://www.test3.teletraan.io")
+
+
+if __name__ == '__main__':
+    BasePage()

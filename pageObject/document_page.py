@@ -16,3 +16,8 @@ class DocumentPage(BasePage):
             By.XPATH, f'//button[span="{doc_type_name}"]'
         )
         doc_type_tab_xpath.click()
+
+
+if __name__ == '__main__':
+    a=DocumentPage()
+    a.go_to_document_tab()

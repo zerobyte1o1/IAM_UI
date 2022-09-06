@@ -1,20 +1,25 @@
 import time
-from selenium import webdriver
+
+from faker import Faker
+from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver import Keys
 from selenium.webdriver.common.by import By
-from selenium.webdriver.chrome.service import Service
-from utils.env import Environment
+from selenium.webdriver.support.wait import WebDriverWait
+
 from utils.driver_factory import DriverFactory
+from utils.mock import Mock
 
 
 class BasePage:
     _base_url = None
+    mock = Mock()
+    faker = Faker(locale=['zh-cn'])
 
     # 当子类没有构造函数的时候，在实例化的过程中，会自动父类的构造函数
     # 所以，每个PO 在实例化过程中，都会执行构造函数的逻辑
     # 问题： 如何避免driver 的重复实例化
 
-    def __init__(self,**kwargs):
+    def __init__(self, **kwargs):
         """
         告诉父类的构造函数，如果传参了，不需要进行重复的实例化操作
         如果没有传参， 那么就是第一次的实例化操作，需要进行实例化
@@ -31,11 +36,14 @@ class BasePage:
         elif DriverFactory.driver:
             # 存在driver时则沿用driver
             self.driver = DriverFactory.driver
-            self.driver.get(self._base_url)
         # 如果不存在driver，则重新开启窗口并登录管理员账号
         else:
             self.driver = DriverFactory.get_driver()
-
+        # 防止登录接口未返回直接请求页面导致停留在登录页面，加入显示等待
+        WebDriverWait(self.driver, 10).until(
+            EC.presence_of_element_located((By.XPATH, '//*[@id="root"]/header/div/div[4]/div[1]/div[2]/input'))
+        )
+        self.driver.get(self._base_url)
 
     def goto_bom(self):
         self.driver.find_element(By.XPATH, "//ul/div[2]").click()

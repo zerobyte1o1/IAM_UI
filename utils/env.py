@@ -3,7 +3,6 @@ import os
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 configPath = os.path.join(BASE_DIR, "env.ini")
-print(configPath)
 cf = configparser.ConfigParser()
 cf.read(configPath, encoding='UTF-8')
 
@@ -16,6 +15,9 @@ password = cf.get(pick, "password")
 
 
 class Environment:
+    def login_url(self):
+        return "https://" + environment + ".teletraan.io/login"
+
     def url(self, module: str):
         return "https://" + environment + ".teletraan.io/subapp/admin/" + module
 

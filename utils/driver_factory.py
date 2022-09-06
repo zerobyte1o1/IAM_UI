@@ -10,14 +10,21 @@ class DriverFactory:
     driver = None
 
     @classmethod
-    def get_driver(cls):
-        if DriverFactory.driver is None:
-            DriverFactory.driver = webdriver.Chrome(service=Service("/usr/local/bin/chromedriver"))
-            DriverFactory.driver.maximize_window()
-            DriverFactory.driver.implicitly_wait(10)
-            env = Environment()
+    def get_driver(cls,**kwargs):
+        env = Environment()
+        DriverFactory.driver = webdriver.Chrome(service=Service("/usr/local/bin/chromedriver"))
+        DriverFactory.driver.maximize_window()
+        DriverFactory.driver.implicitly_wait(10)
+        DriverFactory.driver.get(env.login_url())
+        # 如果传入账号
+        if kwargs:
+            DriverFactory.driver.find_element(By.XPATH, "//input[@name='tenantCode']").send_keys(kwargs["code"])
+            DriverFactory.driver.find_element(By.XPATH, "//input[@name='account']").send_keys(kwargs["account"])
+            DriverFactory.driver.find_element(By.XPATH, "//input[@name='password']").send_keys(kwargs["password"])
+        else:
+
             DriverFactory.driver.find_element(By.XPATH, "//input[@name='tenantCode']").send_keys(env.code())
             DriverFactory.driver.find_element(By.XPATH, "//input[@name='account']").send_keys(env.account())
             DriverFactory.driver.find_element(By.XPATH, "//input[@name='password']").send_keys(env.password())
-            DriverFactory.driver.find_element(By.CSS_SELECTOR, ".MuiButton-label").click()
+        DriverFactory.driver.find_element(By.XPATH, "//form//button[@id]").click()
         return DriverFactory.driver

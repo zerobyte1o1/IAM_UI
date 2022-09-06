@@ -14,20 +14,28 @@ class BasePage:
     # 所以，每个PO 在实例化过程中，都会执行构造函数的逻辑
     # 问题： 如何避免driver 的重复实例化
 
-    def __init__(self):
+    def __init__(self,**kwargs):
         """
         告诉父类的构造函数，如果传参了，不需要进行重复的实例化操作
         如果没有传参， 那么就是第一次的实例化操作，需要进行实例化
         :param base_driver:
         """
-        # DriverFactory.driver为真，则已有开启窗口无需重新实例化
-        if DriverFactory.driver:
+        # 判断是否用新的账号进行操作
+        if kwargs:
+            # 有新的账号时，若有driver，则关闭driver
+            if DriverFactory.driver:
+                DriverFactory.driver.quit()
+            # 使用新的账号登录进入平台
+            self.driver = DriverFactory.get_driver(**kwargs)
+        # 不存在新账号时，DriverFactory.driver为真，则已有开启窗口无需重新实例化
+        elif DriverFactory.driver:
             # 存在driver时则沿用driver
             self.driver = DriverFactory.driver
             self.driver.get(self._base_url)
-        # 如果不存在driver，则重新开启窗口并登录
+        # 如果不存在driver，则重新开启窗口并登录管理员账号
         else:
             self.driver = DriverFactory.get_driver()
+
 
     def goto_bom(self):
         self.driver.find_element(By.XPATH, "//ul/div[2]").click()

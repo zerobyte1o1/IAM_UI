@@ -7,6 +7,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 
 from utils.driver_factory import DriverFactory
+from utils.wait_for_element import WaitForElement
 from utils.mock import Mock
 
 
@@ -14,6 +15,7 @@ class BasePage:
     _base_url = None
     mock = Mock()
     faker = Faker(locale=['zh-cn'])
+    wait_for_element = WaitForElement()
 
     # 当子类没有构造函数的时候，在实例化的过程中，会自动父类的构造函数
     # 所以，每个PO 在实例化过程中，都会执行构造函数的逻辑
@@ -120,6 +122,13 @@ class BasePage:
 
     def get_login(self):
         self.driver.get("http://www.test3.teletraan.io")
+
+    def get_base_url(self):
+        self.driver.get(self._base_url)
+
+    def clear_and_enter(self, xpath, content):
+        self.driver.find_element(By.XPATH, xpath).clear()
+        self.driver.find_element(By.XPATH, xpath).send_keys(content)
 
 
 if __name__ == '__main__':

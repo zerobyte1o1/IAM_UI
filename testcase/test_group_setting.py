@@ -7,6 +7,7 @@ from pageObject.group_setting_page import GroupSettingPage
 class TestGroupSetting:
     def setup(self):
         self.group = GroupSettingPage()
+        self.group.get_base_url()
 
     @allure.testcase(url="https://teletraan.coding.net/p/auto/testing/cases/4", name="创建小组")
     def test_add_group(self):
@@ -34,6 +35,7 @@ class TestGroupSetting:
     b.创建、添加组员、删除：当前小组存在组员数据，无法删除
     c.创建、项目引用、删除：当前小组已被使用，无法删除
     """
+
     @allure.testcase(url="https://teletraan.coding.net/p/auto/testing/cases/7", name="删除小组_正常")
     def test_delete_group_a(self):
         self.group.add_group()

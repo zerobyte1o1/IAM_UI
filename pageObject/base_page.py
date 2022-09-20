@@ -47,46 +47,6 @@ class BasePage:
         )
         self.driver.get(self._base_url)
 
-    def goto_bom(self):
-        self.driver.find_element(By.XPATH, "//ul/div[2]").click()
-        from pageObject.bom_page import BOMPage
-        return BOMPage(self.driver)
-
-    def goto_material_manage(self):
-        self.driver.find_element(By.XPATH, "//ul/div[5]//div[@role='button'][1]").click()
-        from pageObject.material_manage_page import MaterialManagePage
-        time.sleep(1)
-        return MaterialManagePage(self.driver)
-
-    def goto_material_category(self):
-        self.driver.find_element(By.XPATH, "//ul/div[5]//div[@role='button'][2]").click()
-        from pageObject.material_category_page import MaterialCategoryPage
-        time.sleep(1)
-        return MaterialCategoryPage(self.driver)
-
-    def goto_group_setting(self):
-        self.driver.find_element(By.XPATH, "//ul/div[5]//div[@role='button'][3]").click()
-        from pageObject.group_setting_page import GroupSettingPage
-        time.sleep(1)
-        return GroupSettingPage(self.driver)
-
-    def goto_flow(self):
-        self.driver.find_element(By.XPATH, "//ul/div[5]//div[@role='button'][5]").click()
-        from pageObject.flow_page import FlowPage
-        time.sleep(1)
-        return FlowPage(self.driver)
-
-    def goto_project(self):
-        self.driver.find_element(By.XPATH, "//ul/div[1]").click()
-        from pageObject.project_page import ProjectPage
-        time.sleep(1)
-        return ProjectPage(self.driver)
-
-    def goto_file(self):
-        self.driver.find_element(By.XPATH, "//ul/div[3]").click()
-        from pageObject.document_page import DocumentPage
-        return DocumentPage(self.driver)
-
     def get_count_of_table(self):
         count = self.driver.find_element(By.XPATH, '//span[contains(text(),"共")]').text[2: -2]
         return int(count)
@@ -99,8 +59,7 @@ class BasePage:
 
     # 获取alert信息
     def get_alert(self):
-        time.sleep(1)
-        ele = self.driver.find_element(By.XPATH, '//div[@class="MuiAlert-message"]')
+        ele = self.wait_for_element.after_display('xpath', '//div[contains(@class,"MuiAlert-message")][last()]')
         alert = ele.text
         return alert
 
@@ -127,8 +86,15 @@ class BasePage:
         self.driver.get(self._base_url)
 
     def clear_and_enter(self, xpath, content):
+        """
+        清空并输入
+        """
         self.driver.find_element(By.XPATH, xpath).clear()
         self.driver.find_element(By.XPATH, xpath).send_keys(content)
+
+    def click_button(self, value):
+        """点击button"""
+        self.driver.find_element(By.XPATH, '//button[text()="' + value + '"]').click()
 
 
 if __name__ == '__main__':

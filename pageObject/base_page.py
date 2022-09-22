@@ -7,6 +7,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 
 from utils.driver_factory import DriverFactory
+from utils.env import Environment
 from utils.wait_for_element import WaitForElement
 from utils.mock import Mock
 
@@ -59,7 +60,13 @@ class BasePage:
 
     # 获取alert信息
     def get_alert(self):
-        ele = self.wait_for_element.after_display('xpath', '//div[contains(@class,"MuiAlert-message")][last()]')
+        ele = self.wait_for_element.after_display('xpath', '//div[contains(@class,"MuiAlert-message")]')
+        alert = ele.text
+        return alert
+
+    # 获取最后的alert信息
+    def get_last_alert(self):
+        ele = self.wait_for_element.after_display('xpath', '//div[2]/div/div/div/div/div[contains(@class,"MuiAlert-message")]')
         alert = ele.text
         return alert
 

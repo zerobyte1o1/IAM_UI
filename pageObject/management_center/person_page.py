@@ -48,6 +48,7 @@ class PersonPage(BasePage):
         self.driver.find_element(By.NAME, 'roles').click()
         self.driver.find_element(By.XPATH, '//ul[@role="listbox"]/li[1]').click()
         self.driver.find_element(By.NAME, 'roles').click()
+        self.driver.find_element(By.XPATH, '//label/span/input').click()
         self.driver.find_element(By.XPATH, '//button[text()="确定"]').click()
         assert_info = self.get_alert()
         return assert_info
@@ -97,6 +98,6 @@ class PersonPage(BasePage):
 
 if __name__ == '__main__':
     a = PersonPage()
-    res = a.update_person()
+    res = a.create_account()
     a.driver.close()
     print(res)

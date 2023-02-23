@@ -1,0 +1,8 @@
+PyHamcrest==2.0.3
+pytest==6.2.4
+selenium==4.1.0
+seletools==1.2.1
+allure-pytest==2.9.45
+allure-python-commons==2.9.45
+PyYAML==6.0
+Faker~=13.12.0
